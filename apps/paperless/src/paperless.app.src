@@ -5,7 +5,9 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  sasl,
+                  cowboy
                  ]},
   {mod, { paperless_app, []}},
   {env, []}
