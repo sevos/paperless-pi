@@ -1,0 +1,6 @@
+#!/bin/bash
+
+TARGET_FILE_NAME=$1
+
+scanimage > /tmp/image.ppm
+pnmtopng /tmp/image.ppm > $1

@@ -1,0 +1,12 @@
+{application, paperless,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { paperless_app, []}},
+  {env, []}
+ ]}.
