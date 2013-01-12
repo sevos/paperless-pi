@@ -26,6 +26,7 @@ start_link() ->
 init([]) ->
     {ok, { {one_for_one, 5, 10}, [
       ?CHILD(scanner_server, worker, []),
-      ?CHILD(http_server, worker, [8080])
+      ?CHILD(http_server, worker, [8080]),
+      ?CHILD(image_store, worker, [])
     ]} }.
 

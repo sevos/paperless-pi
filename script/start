@@ -1,5 +1,5 @@
 #!/bin/bash
-make
+make && \
 erl -name term@127.0.0.1 \
     -pa $PWD/ebin -pa $PWD/apps/*/ebin -pa $PWD/deps/*/ebin \
     -boot start_sasl -s paperless_app start

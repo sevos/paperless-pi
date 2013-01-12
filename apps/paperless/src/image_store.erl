@@ -1,18 +1,21 @@
--module(scanner_server).
+-module(image_store).
 -behaviour(gen_server).
 -define(SERVER, ?MODULE).
+
+-record(image,
+    {id,
+     body}).
 
 %% ------------------------------------------------------------------
 %% API Function Exports
 %% ------------------------------------------------------------------
 
 -export([start_link/0]).
+-export([store/1]).
+-export([get/1]).
+-export([list/0]).
+-export([flush/0]).
 -export([stop/0]).
--export([scan/0]).
--export([status/0]).
-
-% Internal workers
--export([scan_image_from_default_scanner/1]).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Exports
@@ -27,12 +30,14 @@
 
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
-scan() ->
-    gen_server:cast(?SERVER, scan).
-status() ->
-    gen_server:call(?SERVER, status).
-reset() ->
-    gen_server:cast(?SERVER, reset).
+store(Body) ->
+    gen_server:cast(?SERVER, {store, Body}).
+get(Id) ->
+    gen_server:call(?SERVER, {get, Id}).
+list() ->
+    gen_server:call(?SERVER, list).
+flush() ->
+    gen_server:cast(?SERVER, flush).
 stop() ->
     gen_server:cast(?SERVER, stop).
 
@@ -41,27 +46,31 @@ stop() ->
 %% ------------------------------------------------------------------
 
 init([]) ->
-    {ok, ready}.
+    {ok, []}.
 
-handle_cast(scan, ready) ->
-    Worker = spawn(scanner_server, scan_image_from_default_scanner, [self()]),
-    {noreply, busy};
-handle_cast(scan, State) ->
-    {noreply, State};
-handle_cast(stop, State) ->
-    {stop, normal, State }.
+handle_cast({store, Body}, Store) ->
+    {noreply, [#image{id=next_id(Store), body=Body}|Store]};
+handle_cast(flush, _Store) ->
+    {noreply, []};
+handle_cast(stop, _Store) ->
+    {stop, normal, []};
+handle_cast(_, Status) ->
+    {noreply, Status}.
 
-handle_call(status, _From, Status) ->
-    {reply, Status, Status}.
+handle_call(list, _From, Store) ->
+    {reply, [Image#image.id || Image <- Store], Store};
+handle_call({get, Id}, _From, Store) ->
+    Results = [Image#image.body || Image <- Store, Image#image.id == Id],
+    Reply = case Results of
+        [Body] -> {ok, Body};
+        [] -> {error, not_found}
+    end,
+    {reply, Reply, Store};
+handle_call(_, _From, Status) ->
+    {reply, ok, Status}.
 
-handle_info(Payload, State) ->
-    case Payload of
-        {worker_finished, Data} ->
-            image_store:store(Data),
-            {noreply, ready};
-        _ ->
-            {noreply, State}
-    end.
+handle_info(_Payload, State) ->
+    {noreply, State}.
 
 terminate(_Reason, _State) ->
     ok.
@@ -73,6 +82,8 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal Function Definitions
 %% ------------------------------------------------------------------
 
-scan_image_from_default_scanner(Caller) ->
-    Caller ! {worker_finished, os:cmd("sudo scanimage | pnmtopng")}.
-
+next_id(Store) ->
+    case Store of
+        [] -> 0;
+        _  -> lists:max([Image#image.id || Image <- Store]) + 1
+    end.
