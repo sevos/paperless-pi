@@ -10,7 +10,7 @@ init({tcp, http}, Req, _Opts) ->
 
 handle(Req, State) ->
     {Path,_} = cowboy_req:path(Req),
-    {ok, Reply} = cowboy_req:reply(404, [{<<"Content-Type">>, <<"text/json">>}],
+    {ok, Reply} = cowboy_req:reply(404, [{<<"Content-Type">>, <<"application/x-json">>}],
                                         ?TEMPLATE:render(?JSON, [Path]), Req),
     {ok, Reply, State}.
 

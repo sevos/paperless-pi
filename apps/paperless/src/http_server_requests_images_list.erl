@@ -15,7 +15,7 @@ handle(Req, State) ->
         case Method of
             <<"GET">> ->
                 Images = image_store:list(),
-                cowboy_req:reply(200, [{<<"Content-Type">>, <<"text/json">>}],
+                cowboy_req:reply(200, [{<<"Content-Type">>, <<"application/x-json">>}],
                                 ?TEMPLATE:render(?LIST_JSON, [Images]), Req);
             <<"DELETE">> ->
                 image_store:flush(),

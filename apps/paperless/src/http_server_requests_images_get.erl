@@ -14,7 +14,7 @@ handle(Req, State) ->
     {ok, Reply} =
       case image_store:get(ImageId) of
         {error, not_found} ->
-          cowboy_req:reply(404, [{<<"Content-Type">>, <<"text/json">>}],
+          cowboy_req:reply(404, [{<<"Content-Type">>, <<"application/x-json">>}],
                            ?TEMPLATE:render(?NOT_FOUND_JSON, [ImageId]), Req);
         {ok, Image} ->
           cowboy_req:reply(200, [{<<"Content-Type">>, <<"image/jpeg">>}], Image, Req)
