@@ -26,6 +26,8 @@ init([Port]) ->
   Dispatch = [
         {'_', [
                 {[<<"status">>], http_server_requests_status, []},
+                {[<<"images">>, id], http_server_requests_images_get, []},
+                {[<<"images">>], http_server_requests_images_list, []},
                 {'_', http_server_requests_catch_all, []}
               ]
         }

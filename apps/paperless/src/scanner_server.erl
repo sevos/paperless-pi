@@ -74,5 +74,8 @@ code_change(_OldVsn, State, _Extra) ->
 %% ------------------------------------------------------------------
 
 scan_image_from_default_scanner(Caller) ->
-    Caller ! {worker_finished, os:cmd("sudo scanimage | pnmtopng")}.
+    os:cmd("sudo scanimage | pnmtopng > tmp.jpg"),
+    {ok, Image} = file:read_file("tmp.jpg"),
+    file:delete("tmp.jpg"),
+    Caller ! {worker_finished, Image}.
 
