@@ -4,14 +4,24 @@
 
 -define(TEMPLATE, http_server_template).
 -define(LIST_JSON, <<"{\"available_images\": \"~p\"}~n">>).
+-define(OK, <<"{\"status\": \"ok\"}~n">>).
 
 init({tcp, http}, Req, _Opts) ->
     {ok, Req, []}.
 
 handle(Req, State) ->
-    Images = image_store:list(),
-    {ok, Reply} = cowboy_req:reply(404, [{<<"Content-Type">>, <<"text/json">>}],
-                                        ?TEMPLATE:render(?LIST_JSON, [Images]), Req),
+    {Method, _} = cowboy_req:method(Req),
+    {ok, Reply} =
+        case Method of
+            <<"GET">> ->
+                Images = image_store:list(),
+                cowboy_req:reply(200, [{<<"Content-Type">>, <<"text/json">>}],
+                                ?TEMPLATE:render(?LIST_JSON, [Images]), Req);
+            <<"DELETE">> ->
+                image_store:flush(),
+                cowboy_req:reply(200, [{<<"Content-Type">>, <<"text/json">>}],
+                                ?TEMPLATE:render(?OK, []), Req)
+        end,
     {ok, Reply, State}.
 
 terminate(_Req, _State) ->
