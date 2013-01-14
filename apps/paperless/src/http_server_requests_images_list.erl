@@ -16,11 +16,11 @@ handle(Req, State) ->
             <<"GET">> ->
                 Images = image_store:list(),
                 cowboy_req:reply(200, [{<<"Content-Type">>, <<"application/x-json">>}],
-                                ?TEMPLATE:render(?LIST_JSON, [Images]), Req);
+				 ?TEMPLATE:render(?LIST_JSON, [Images]), Req);
             <<"DELETE">> ->
                 image_store:flush(),
                 cowboy_req:reply(200, [{<<"Content-Type">>, <<"text/json">>}],
-                                ?TEMPLATE:render(?OK, []), Req)
+				 ?TEMPLATE:render(?OK, []), Req)
         end,
     {ok, Reply, State}.
 

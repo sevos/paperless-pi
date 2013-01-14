@@ -3,8 +3,8 @@
 -define(SERVER, ?MODULE).
 
 -record(image,
-    {id,
-     body}).
+	{id,
+	 body}).
 
 %% ------------------------------------------------------------------
 %% API Function Exports
@@ -62,9 +62,9 @@ handle_call(list, _From, Store) ->
 handle_call({get, Id}, _From, Store) ->
     Results = [Image#image.body || Image <- Store, Image#image.id == Id],
     Reply = case Results of
-        [Body] -> {ok, Body};
-        [] -> {error, not_found}
-    end,
+		[Body] -> {ok, Body};
+		[] -> {error, not_found}
+	    end,
     {reply, Reply, Store};
 handle_call(_, _From, Status) ->
     {reply, ok, Status}.

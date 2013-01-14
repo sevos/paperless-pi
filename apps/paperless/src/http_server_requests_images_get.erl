@@ -12,13 +12,13 @@ handle(Req, State) ->
     {RawImageId, _} = cowboy_req:binding(id, Req),
     ImageId = list_to_integer(binary_to_list(RawImageId)),
     {ok, Reply} =
-      case image_store:get(ImageId) of
-        {error, not_found} ->
-          cowboy_req:reply(404, [{<<"Content-Type">>, <<"application/x-json">>}],
-                           ?TEMPLATE:render(?NOT_FOUND_JSON, [ImageId]), Req);
-        {ok, Image} ->
-          cowboy_req:reply(200, [{<<"Content-Type">>, <<"image/jpeg">>}], Image, Req)
-      end,
+	case image_store:get(ImageId) of
+	    {error, not_found} ->
+		cowboy_req:reply(404, [{<<"Content-Type">>, <<"application/x-json">>}],
+				 ?TEMPLATE:render(?NOT_FOUND_JSON, [ImageId]), Req);
+	    {ok, Image} ->
+		cowboy_req:reply(200, [{<<"Content-Type">>, <<"image/jpeg">>}], Image, Req)
+	end,
     {ok, Reply, State}.
 
 terminate(_Req, _State) ->

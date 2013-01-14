@@ -10,40 +10,40 @@
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
-     terminate/2, code_change/3]).
+         terminate/2, code_change/3]).
 
 %% API implementation
 start_link(Port) ->
-  gen_server:start_link({local, ?SERVER}, ?MODULE, [Port], []).
+    gen_server:start_link({local, ?SERVER}, ?MODULE, [Port], []).
 
 stop() ->
-  gen_server:cast(?SERVER, stop).
+    gen_server:cast(?SERVER, stop).
 
 %% gen_server implementation
 init([Port]) ->
-  process_flag(trap_exit, true),
-  io:format("~p (~p) starting...~n", [?MODULE, self()]),
-  Dispatch = [
-        {'_', [
-                {[<<"api">>, <<"status">>], http_server_requests_status, []},
-                {[<<"api">>, <<"scan">>], http_server_requests_scan, []},
-                {[<<"api">>, <<"images">>, id], http_server_requests_images_get, []},
-                {[<<"api">>, <<"images">>], http_server_requests_images_list, []},
-                {['...'], cowboy_static, [
-                  {directory, <<"./priv/jsapp">>},
-                  {mimetypes, {fun mimetypes:path_to_mimes/2, default}}
-                ]},
-                {'_', http_server_requests_catch_all, []}
-              ]
-        }
-  ],
-  {ok, CowboyPid} = cowboy:start_http(http_server_listener, 100, [{port, Port}], [
-      {env, [{dispatch, Dispatch}]},
-      {max_keepalive, 50},
-      {timeout, 500}
-  ]),
-  erlang:monitor(process, CowboyPid),
-  {ok, CowboyPid}.
+    process_flag(trap_exit, true),
+    io:format("~p (~p) starting...~n", [?MODULE, self()]),
+    Dispatch = [
+                {'_', [
+                       {[<<"api">>, <<"status">>], http_server_requests_status, []},
+                       {[<<"api">>, <<"scan">>], http_server_requests_scan, []},
+                       {[<<"api">>, <<"images">>, id], http_server_requests_images_get, []},
+                       {[<<"api">>, <<"images">>], http_server_requests_images_list, []},
+                       {['...'], cowboy_static, [
+                                                 {directory, <<"./priv/jsapp">>},
+                                                 {mimetypes, {fun mimetypes:path_to_mimes/2, default}}
+                                                ]},
+                       {'_', http_server_requests_catch_all, []}
+                      ]
+                }
+               ],
+    {ok, CowboyPid} = cowboy:start_http(http_server_listener, 100, [{port, Port}], [
+                                                                                    {env, [{dispatch, Dispatch}]},
+                                                                                    {max_keepalive, 50},
+                                                                                    {timeout, 500}
+                                                                                   ]),
+    erlang:monitor(process, CowboyPid),
+    {ok, CowboyPid}.
 
 handle_call(_,_, State) -> {reply, ok, State}.
 handle_cast(_,State) -> {noreply, State}.

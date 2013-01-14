@@ -16,10 +16,10 @@ handle(Req, State) ->
             {ready, <<"POST">>} ->
                 scanner_server:scan(),
                 cowboy_req:reply(200, [{<<"Content-Type">>, <<"application/x-json">>}],
-                       ?TEMPLATE:render(?OK, []), Req);
-              _ ->
+				 ?TEMPLATE:render(?OK, []), Req);
+	    _ ->
                 cowboy_req:reply(405, [{<<"Content-Type">>, <<"application/x-json">>}],
-                       ?TEMPLATE:render(?BAD_REQUEST, []), Req)
+				 ?TEMPLATE:render(?BAD_REQUEST, []), Req)
         end,
     {ok, Reply, State}.
 
