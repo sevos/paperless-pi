@@ -59,6 +59,9 @@ clean:
 deps:
 	@$(REBAR) get-deps
 
+format:
+	find apps/ -name *.erl -exec script/erlformat {} \;
+
 # Removes whole dependencies
 distclean:
 	@$(REBAR) delete-deps

@@ -37,11 +37,12 @@ init([Port]) ->
                       ]
                 }
                ],
-    {ok, CowboyPid} = cowboy:start_http(http_server_listener, 100, [{port, Port}], [
-                                                                                    {env, [{dispatch, Dispatch}]},
-                                                                                    {max_keepalive, 50},
-                                                                                    {timeout, 500}
-                                                                                   ]),
+    {ok, CowboyPid} = cowboy:start_http(http_server_listener, 100,
+                                        [{port, Port}], [
+							 {env, [{dispatch, Dispatch}]},
+							 {max_keepalive, 50},
+							 {timeout, 500}
+							]),
     erlang:monitor(process, CowboyPid),
     {ok, CowboyPid}.
 

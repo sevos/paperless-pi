@@ -11,7 +11,7 @@
 -export([scan/0]).
 -export([status/0]).
 
-						% Internal workers
+                                                % Internal workers
 -export([scan_image_from_default_scanner/1]).
 
 %% ------------------------------------------------------------------

@@ -11,7 +11,7 @@ init({tcp, http}, Req, _Opts) ->
 handle(Req, State) ->
     Status = atom_to_list(scanner_server:status()),
     {ok, Reply} = cowboy_req:reply(200, [{<<"Content-Type">>, <<"application/x-json">>}],
-				   ?TEMPLATE:render(?STATUS, [Status]), Req),
+                                   ?TEMPLATE:render(?STATUS, [Status]), Req),
     {ok, Reply, State}.
 
 terminate(_Req, _State) ->
