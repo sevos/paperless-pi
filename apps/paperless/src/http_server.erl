@@ -29,8 +29,13 @@ init([Port]) ->
                        {[<<"api">>, <<"scan">>], http_server_requests_scan, []},
                        {[<<"api">>, <<"images">>, id], http_server_requests_images_get, []},
                        {[<<"api">>, <<"images">>], http_server_requests_images_list, []},
+                       {[], cowboy_static, [
+                                            {directory,{priv_dir, paperless, [<<"www">>]}},
+                                            {file, <<"index.html">>},
+                                            {mimetypes, {fun mimetypes:path_to_mimes/2, default}}
+                                           ]},
                        {['...'], cowboy_static, [
-                                                 {directory, <<"./priv/jsapp">>},
+                                                 {directory,{priv_dir, paperless, [<<"www">>]}},
                                                  {mimetypes, {fun mimetypes:path_to_mimes/2, default}}
                                                 ]},
                        {'_', http_server_requests_catch_all, []}

@@ -13,7 +13,7 @@ Vagrant::Config.run do |config|
 
   # config.vm.network :bridged
 
-  config.vm.forward_port 8000, 8000
+  config.vm.forward_port 8080, 8080
 
   # config.vm.share_folder "v-data", "/vagrant_data", "../data"
 
