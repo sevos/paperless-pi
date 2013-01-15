@@ -5,6 +5,7 @@
 -define(TEMPLATE, http_server_template).
 -define(JSON, <<"{\"not_found\": \"/~s\"}~n">>).
 
+
 init({tcp, http}, Req, _Opts) ->
     {ok, Req, []}.
 
