@@ -31,8 +31,6 @@ scan() ->
     gen_server:cast(?SERVER, scan).
 status() ->
     gen_server:call(?SERVER, status).
-reset() ->
-    gen_server:cast(?SERVER, reset).
 stop() ->
     gen_server:cast(?SERVER, stop).
 
@@ -44,7 +42,7 @@ init([]) ->
     {ok, ready}.
 
 handle_cast(scan, ready) ->
-    Worker = spawn(scanner_server, scan_image_from_default_scanner, [self()]),
+    spawn(scanner_server, scan_image_from_default_scanner, [self()]),
     {noreply, busy};
 handle_cast(scan, State) ->
     {noreply, State};
